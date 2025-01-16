@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Paper, Typography, TextField, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Box, useTheme, Divider } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon, Check as CheckIcon, Clear as ClearIcon } from '@mui/icons-material';
+//import {useTheme} from '@mui/material';
+//import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon, Check as CheckIcon, Clear as ClearIcon } from '@mui/icons-material';
 import { taskAPI } from '../../services/api';
 import { Task } from '../../types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+//import { Separator } from '@/components/ui/separator';
+import { Plus, Trash2, Pencil, CheckCircle, X } from 'lucide-react';
 
 const TaskList: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -10,7 +17,7 @@ const TaskList: React.FC = () => {
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [error, setError] = useState<string>('');
-    const theme = useTheme();
+    //const theme = useTheme();
 
     const fetchTasks = async () => {
         try {
@@ -68,146 +75,115 @@ const TaskList: React.FC = () => {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-            <Paper 
-                elevation={0}
-                sx={{
-                    p: 4,
-                    borderRadius: 3,
-                    border: `1px solid ${theme.palette.divider}`,
-                    bgcolor: theme.palette.background.paper,
-                }}
-            >
-                <Typography variant="h4" component="h1" gutterBottom align="center" color="primary">
-                    Tasks
-                </Typography>
-
+        <div className="min-h-screen w-full bg-gray-50/50 p-4">
+          <div className="max-w-3xl mx-auto">
+            <Card>
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl font-semibold">Tasks</CardTitle>
+              </CardHeader>
+    
+              <CardContent>
                 {error && (
-                    <Typography color="error" sx={{ mb: 2 }}>
-                        {error}
-                    </Typography>
+                  <Alert variant="destructive" className="mb-6">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
                 )}
-
-                <Box sx={{ mb: 4 }}>
-                    <TextField
-                        fullWidth
-                        label="New Task Title"
-                        value={newTaskTitle}
-                        onChange={(e) => setNewTaskTitle(e.target.value)}
-                        sx={{ mb: 2 }}
-                        variant="outlined"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Description"
-                        value={newTaskDescription}
-                        onChange={(e) => setNewTaskDescription(e.target.value)}
-                        sx={{ mb: 2 }}
-                        multiline
-                        rows={2}
-                        variant="outlined"
-                    />
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCreate}
-                        startIcon={<AddIcon />}
-                        sx={{ 
-                            borderRadius: 2,
-                            py: 1.5
-                        }}
-                    >
-                        Add Task
-                    </Button>
-                </Box>
-
-                <List>
-                    {tasks.map((task) => (
-                        <React.Fragment key={task.id}>
-                            <ListItem
-                                sx={{
-                                    bgcolor: theme.palette.background.default,
-                                    borderRadius: 2,
-                                    mb: 1,
-                                    '&:hover': {
-                                        bgcolor: theme.palette.action.hover,
-                                    },
-                                }}
+    
+                <div className="space-y-4 mb-8">
+                  <Input
+                    placeholder="Task title"
+                    value={newTaskTitle}
+                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                    className="w-full"
+                  />
+                  <Textarea
+                    placeholder="Task description"
+                    value={newTaskDescription}
+                    onChange={(e) => setNewTaskDescription(e.target.value)}
+                    className="w-full min-h-[80px]"
+                  />
+                  <Button 
+                    onClick={handleCreate}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Task
+                  </Button>
+                </div>
+    
+                <div className="space-y-4">
+                  {tasks.map((task) => (
+                    <div key={task.id} className="bg-card rounded-lg border p-4">
+                      {editingTask?.id === task.id ? (
+                        <div className="space-y-4">
+                          <Input
+                            value={editingTask.title}
+                            onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
+                          />
+                          <Textarea
+                            value={editingTask.description}
+                            onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
+                            className="min-h-[80px]"
+                          />
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => handleUpdate(editingTask)}
+                              className="w-full"
                             >
-                                {editingTask?.id === task.id ? (
-                                    <Box sx={{ width: '100%' }}>
-                                        <TextField
-                                            fullWidth
-                                            value={editingTask.title}
-                                            onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
-                                            sx={{ mb: 1 }}
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            value={editingTask.description}
-                                            onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
-                                            multiline
-                                            rows={2}
-                                        />
-                                        <Box sx={{ mt: 1 }}>
-                                            <IconButton onClick={() => handleUpdate(editingTask)} color="primary">
-                                                <CheckIcon />
-                                            </IconButton>
-                                            <IconButton onClick={() => setEditingTask(null)} color="error">
-                                                <ClearIcon />
-                                            </IconButton>
-                                        </Box>
-                                    </Box>
-                                ) : (
-                                    <>
-                                        <ListItemText
-                                            primary={
-                                                <Typography variant="subtitle1" component="div">
-                                                    {task.title}
-                                                </Typography>
-                                            }
-                                            secondary={
-                                                task.description && (
-                                                    <Typography
-                                                        variant="body2"
-                                                        color="textSecondary"
-                                                        sx={{ 
-                                                            mt: 1,
-                                                            whiteSpace: 'pre-wrap'
-                                                        }}
-                                                    >
-                                                        {task.description}
-                                                    </Typography>
-                                                )
-                                            }
-                                        />
-                                        <ListItemSecondaryAction>
-                                            <IconButton 
-                                                edge="end" 
-                                                onClick={() => setEditingTask(task)}
-                                                sx={{ mr: 1 }}
-                                            >
-                                                <EditIcon />
-                                            </IconButton>
-                                            <IconButton 
-                                                edge="end" 
-                                                onClick={() => handleDelete(task.id)}
-                                                color="error"
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </ListItemSecondaryAction>
-                                    </>
-                                )}
-                            </ListItem>
-                            <Divider component="li" />
-                        </React.Fragment>
-                    ))}
-                </List>
-            </Paper>
-        </Container>
-    );
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              Save
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setEditingTask(null)}
+                              className="w-full"
+                            >
+                              <X className="w-4 h-4 mr-2" />
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="flex items-start justify-between">
+                            <div className="space-y-1">
+                              <h3 className="font-medium leading-none">{task.title}</h3>
+                              {task.description && (
+                                <p className="text-sm text-muted-foreground mt-2">
+                                  {task.description}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => setEditingTask(task)}
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="text-destructive hover:text-destructive"
+                                onClick={() => handleDelete(task.id)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      );
 };
 
 export default TaskList;

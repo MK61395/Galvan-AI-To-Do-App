@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
-import {
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction,
-    IconButton,
-    Checkbox,
-    Typography,
-    Menu,
-    MenuItem,
-    useTheme,
-    Box,
-} from '@mui/material';
-import {
-    MoreVert as MoreVertIcon,
-    Delete as DeleteIcon,
-    Edit as EditIcon,
-} from '@mui/icons-material';
 import { Task } from '../../types';
+
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import TaskForm from './TaskForm';
 
 interface TaskItemProps {
@@ -34,27 +28,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
     onUpdate,
     isLast = false,
 }) => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [isEditOpen, setIsEditOpen] = useState(false);
-    const theme = useTheme();
-
-    const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleEdit = () => {
-        setIsEditOpen(true);
-        handleMenuClose();
-    };
-
-    const handleDelete = () => {
-        onDelete(task.id);
-        handleMenuClose();
-    };
 
     const handleUpdate = (title: string, description: string) => {
         onUpdate(task.id, title, description);
@@ -63,113 +37,71 @@ const TaskItem: React.FC<TaskItemProps> = ({
 
     return (
         <>
-            <ListItem
-                sx={{
-                    borderBottom: !isLast ? `1px solid ${theme.palette.divider}` : 'none',
-                    transition: 'background-color 0.2s',
-                    '&:hover': {
-                        backgroundColor: theme.palette.action.hover,
-                    },
-                    py: 2,
-                    px: 3,
-                }}
-            >
-                <Checkbox
-                    checked={task.completed}
-                    onChange={() => onToggle(task.id)}
-                    color="primary"
-                    sx={{
-                        color: theme.palette.text.secondary,
-                        mr: 2,
-                    }}
-                />
-                <ListItemText
-                    primary={
-                        <Typography
-                            variant="subtitle1"
-                            sx={{
-                                textDecoration: task.completed ? 'line-through' : 'none',
-                                color: task.completed ? theme.palette.text.secondary : theme.palette.text.primary,
-                                fontWeight: 500,
-                                mb: 0.5,
-                            }}
-                        >
-                            {task.title}
-                        </Typography>
-                    }
-                    secondary={
-                        task.description && (
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    color: task.completed 
-                                        ? theme.palette.text.disabled 
-                                        : theme.palette.text.secondary,
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: 'vertical',
-                                    overflow: 'hidden',
-                                }}
-                            >
-                                {task.description}
-                            </Typography>
-                        )
-                    }
-                />
-                <ListItemSecondaryAction>
-                    <IconButton 
-                        edge="end" 
-                        onClick={handleMenuOpen}
-                        sx={{ color: theme.palette.text.secondary }}
-                    >
-                        <MoreVertIcon />
-                    </IconButton>
-                </ListItemSecondaryAction>
-            </ListItem>
-
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-                PaperProps={{
-                    elevation: 3,
-                    sx: {
-                        minWidth: 120,
-                        borderRadius: 2,
-                        mt: 1,
-                    }
-                }}
-            >
-                <MenuItem onClick={handleEdit} sx={{ py: 1.5 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <EditIcon fontSize="small" />
-                        <Typography>Edit</Typography>
-                    </Box>
-                </MenuItem>
-                <MenuItem 
-                    onClick={handleDelete}
-                    sx={{ 
-                        py: 1.5,
-                        color: theme.palette.error.main,
-                    }}
-                >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <DeleteIcon fontSize="small" />
-                        <Typography>Delete</Typography>
-                    </Box>
-                </MenuItem>
-            </Menu>
-
-            <TaskForm
-                open={isEditOpen}
-                onClose={() => setIsEditOpen(false)}
-                onSubmit={handleUpdate}
-                initialTitle={task.title}
-                initialDescription={task.description}
-                isEdit
+          <div className={cn(
+            "flex items-start gap-4 p-4 group hover:bg-accent/50 rounded-lg transition-colors",
+            !isLast && "border-b"
+          )}>
+            <Checkbox
+              checked={task.completed}
+              onCheckedChange={() => onToggle(task.id)}
+              className="mt-1"
             />
+            
+            <div className="flex-1 min-w-0">
+              <h3 className={cn(
+                "font-medium leading-none",
+                task.completed && "line-through text-muted-foreground"
+              )}>
+                {task.title}
+              </h3>
+              
+              {task.description && (
+                <p className={cn(
+                  "mt-2 text-sm text-muted-foreground line-clamp-2",
+                  task.completed && "text-muted-foreground/60"
+                )}>
+                  {task.description}
+                </p>
+              )}
+            </div>
+    
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => onDelete(task.id)}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+    
+          <TaskForm
+            open={isEditOpen}
+            onClose={() => setIsEditOpen(false)}
+            onSubmit={handleUpdate}
+            initialTitle={task.title}
+            initialDescription={task.description}
+            isEdit
+          />
         </>
-    );
+      );
 };
 
 export default TaskItem;

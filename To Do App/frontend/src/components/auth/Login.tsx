@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
-import { TextField, Button, Paper, Typography, Box, Container, useTheme, Link as MuiLink } from '@mui/material';
-import { useNavigate, Link } from 'react-router-dom';
+//import { TextField, Button, Paper, Typography, Box, Container, useTheme, Link as MuiLink } from '@mui/material';
+import { useNavigate} from 'react-router-dom';
+//import {useTheme} from '@mui/material'; 
 import { authAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { LockOutlined as LockIcon, Login as LoginIcon } from '@mui/icons-material';
+//import { LockOutlined as LockIcon, Login as LoginIcon } from '@mui/icons-material';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { KeyRound, LogIn } from 'lucide-react';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -11,7 +18,7 @@ const Login: React.FC = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
-    const theme = useTheme();
+    //const theme = useTheme();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,120 +33,80 @@ const Login: React.FC = () => {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    mt: 15,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Paper
-                    elevation={0}
-                    sx={{
-                        p: 4,
-                        width: '100%',
-                        borderRadius: 3,
-                        border: `1px solid ${theme.palette.divider}`,
-                        bgcolor: theme.palette.background.paper,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            mb: 3,
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                width: 40,
-                                height: 40,
-                                borderRadius: '50%',
-                                bgcolor: theme.palette.primary.main,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                mb: 1,
-                            }}
-                        >
-                            <LockIcon sx={{ color: 'white' }} />
-                        </Box>
-                        <Typography component="h1" variant="h5">
-                            Sign In
-                        </Typography>
-                    </Box>
-
-                    {error && (
-                        <Typography 
-                            color="error" 
-                            sx={{ 
-                                mb: 2,
-                                textAlign: 'center'
-                            }}
-                        >
-                            {error}
-                        </Typography>
-                    )}
-
-                    <form onSubmit={handleSubmit}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            label="Username"
-                            autoComplete="username"
-                            autoFocus
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            sx={{ mb: 2 }}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            label="Password"
-                            type="password"
-                            autoComplete="current-password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            sx={{ mb: 3 }}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            startIcon={<LoginIcon />}
-                            sx={{ 
-                                mb: 2,
-                                py: 1.5,
-                                borderRadius: 2
-                            }}
-                        >
-                            Sign In
-                        </Button>
-                        <Box sx={{ textAlign: 'center' }}>
-                            <MuiLink
-                                component={Link}
-                                to="/register"
-                                variant="body2"
-                                sx={{
-                                    textDecoration: 'none',
-                                    '&:hover': {
-                                        textDecoration: 'underline',
-                                    },
-                                }}
-                            >
-                                Don't have an account? Sign Up
-                            </MuiLink>
-                        </Box>
-                    </form>
-                </Paper>
-            </Box>
-        </Container>
-    );
+        <div className="min-h-screen w-full flex items-center justify-center bg-gray-50/50">
+          <div className="w-full max-w-md px-4">
+            <Card className="w-full">
+              <CardHeader className="space-y-1 flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center mb-4">
+                  <KeyRound className="h-6 w-6 text-primary-foreground" />
+                </div>
+                <CardTitle className="text-2xl font-semibold tracking-tight">
+                  Welcome back
+                </CardTitle>
+                <CardDescription>
+                  Enter your credentials to access your account
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent>
+                {error && (
+                  <Alert variant="destructive" className="mb-6">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+                
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="username">Username</Label>
+                    <Input
+                      id="username"
+                      type="text"
+                      placeholder="Enter your username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                      className="w-full"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full"
+                    />
+                  </div>
+    
+                  <Button 
+                    type="submit" 
+                    className="w-full h-11 mt-6"
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Sign In
+                  </Button>
+                </form>
+              </CardContent>
+    
+              <CardFooter className="flex flex-col space-y-4">
+                <div className="text-sm text-center text-muted-foreground">
+                  Don't have an account?{' '}
+                  <a 
+                    href="/register" 
+                    className="text-primary hover:underline font-medium"
+                  >
+                    Sign up
+                  </a>
+                </div>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+      );
 };
 
 export default Login;
