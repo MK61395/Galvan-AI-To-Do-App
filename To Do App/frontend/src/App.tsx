@@ -14,23 +14,25 @@ function App() {
       <CssBaseline />
       <AuthProvider>
         <Router>
-          <div className="min-h-screen flex flex-col">
+          <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1 container mx-auto px-4 py-8">
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route
-                  path="/tasks"
-                  element={
-                    <ProtectedRoute>
-                      <TaskList />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/" element={<Navigate to="/tasks" replace />} />
-              </Routes>
-            </main>
+            <div className="flex flex-1 items-center justify-center p-4 mt-16">
+              <div className="w-full max-w-md">
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route
+                    path="/tasks"
+                    element={
+                      <ProtectedRoute>
+                        <TaskList />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="/" element={<Navigate to="/tasks" replace />} />
+                </Routes>
+              </div>
+            </div>
           </div>
         </Router>
       </AuthProvider>
