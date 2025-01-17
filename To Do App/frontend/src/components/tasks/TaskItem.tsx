@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Task } from '../../types';
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TaskForm from './TaskForm';
 
@@ -69,25 +67,30 @@ const TaskItem: React.FC<TaskItemProps> = ({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  size="icon"
-                  className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  size="lg"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background/80 p-2"
                 >
-                  <MoreVertical className="h-4 w-4" />
+                  <MoreVertical className="h-8 w-8" strokeWidth={2.5} />
                 </Button>
               </DropdownMenuTrigger>
               
-              <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
-                  <Pencil className="h-4 w-4 mr-2" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => onDelete(task.id)}
-                  className="text-destructive focus:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="flex gap-2 p-4">
+                  <Button
+                    variant="outline"
+                    className="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 border-yellow-200"
+                    onClick={() => setIsEditOpen(true)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="bg-red-100 hover:bg-red-200 text-red-700 border-red-200"
+                    onClick={() => onDelete(task.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -101,7 +104,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
             isEdit
           />
         </>
-      );
+    );
 };
 
 export default TaskItem;

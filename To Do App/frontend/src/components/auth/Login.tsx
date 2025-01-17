@@ -33,7 +33,7 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gray-50/50">
+        <div className="w-ful">
           <div className="w-full max-w-md px-4">
             <Card className="w-full">
               <CardHeader className="space-y-1 flex flex-col items-center">

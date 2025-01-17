@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 //import { Separator } from '@/components/ui/separator';
-import { Plus, Trash2, Pencil, CheckCircle, X } from 'lucide-react';
+import { Plus, CheckCircle, X } from 'lucide-react';
 
 const TaskList: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -75,9 +75,9 @@ const TaskList: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen w-full bg-gray-50/50 p-4">
+        <div className="w-full">
           <div className="max-w-3xl mx-auto">
-            <Card>
+            <Card className="shadow-lg">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl font-semibold">Tasks</CardTitle>
               </CardHeader>
@@ -156,21 +156,20 @@ const TaskList: React.FC = () => {
                                 </p>
                               )}
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex items-center gap-2">
                               <Button
-                                size="icon"
-                                variant="ghost"
+                                variant="outline"
+                                className="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 border-yellow-200"
                                 onClick={() => setEditingTask(task)}
                               >
-                                <Pencil className="w-4 h-4" />
+                                Edit
                               </Button>
                               <Button
-                                size="icon"
-                                variant="ghost"
-                                className="text-destructive hover:text-destructive"
+                                variant="outline"
+                                className="bg-red-100 hover:bg-red-200 text-red-700 border-red-200"
                                 onClick={() => handleDelete(task.id)}
                               >
-                                <Trash2 className="w-4 h-4" />
+                                Delete
                               </Button>
                             </div>
                           </div>
